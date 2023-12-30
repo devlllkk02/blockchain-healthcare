@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+
 @Getter
 @Setter
 @Component
@@ -14,13 +15,21 @@ public class BlockchainDTO {
 
     public BlockchainDTO() {
         this.chain = new ArrayList<>();
-        createBlock(1 ,"0",new PatientRecordDTO("Genesis Patient",0,"Genesis Disease"));
+        createBlock(0, "0", new PatientRecordDTO("Genesis Patient", 0, "Genesis Disease"));
     }
 
     public BlockDTO createBlock(int proof, String previousHash, PatientRecordDTO patientRecord) {
-        BlockDTO block = new BlockDTO(chain.size() + 1, System.currentTimeMillis(), previousHash, patientRecord);
+        BlockDTO block = new BlockDTO(generateblockID(), proof, patientRecord, previousHash, System.currentTimeMillis());
         chain.add(block);
         return block;
+    }
+
+    public int generateblockID(){
+        if(chain.isEmpty()){
+            return 0;
+        }else {
+            return chain.size();
+        }
     }
 
     public BlockDTO getPreviousBlock() {
@@ -33,8 +42,8 @@ public class BlockchainDTO {
 
         while (!checkProof) {
             String hashOperation = StringUtil.applySHA256(String.valueOf(newProof * newProof - previousProof * previousProof));
-
             if (hashOperation.startsWith("0000")) {
+                System.out.println(hashOperation);
                 checkProof = true;
             } else {
                 newProof++;
@@ -45,7 +54,7 @@ public class BlockchainDTO {
     }
 
     public String hash(BlockDTO block) {
-        String encodedBlock = block.toString(); // Assuming you have a toString method in your BlockDTO class
+        String encodedBlock = block.toString();
         return StringUtil.applySHA256(encodedBlock);
     }
 
@@ -60,8 +69,8 @@ public class BlockchainDTO {
                 return false;
             }
 
-            int previousProof = previousBlock.getIndex();
-            int proof = block.getIndex();
+            int previousProof = previousBlock.getBlock_id();
+            int proof = block.getBlock_id();
             String hashOperation = StringUtil.applySHA256(String.valueOf(proof * proof - previousProof * previousProof));
 
             if (!hashOperation.startsWith("0000")) {

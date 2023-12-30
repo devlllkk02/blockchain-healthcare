@@ -32,7 +32,7 @@ public class BlockchainController {
 
     @PostMapping("/mine")
     public BlockDTO mineNewBlock(@RequestBody PatientRecordDTO patientRecords) {
-        int previousProof = blockchain.getPreviousBlock().getIndex();
+        int previousProof = blockchain.getPreviousBlock().getBlock_id();
         int proof = blockchain.proofOfWork(previousProof);
         String previousHash = blockchain.getPreviousBlock().getHash();
         return blockchain.createBlock(proof, previousHash, patientRecords);

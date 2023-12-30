@@ -8,22 +8,25 @@ import lombok.Setter;
 @Getter
 public class BlockDTO {
 
-    private int index;
-    private long timestamp;
-    private String hash;
-    private String previousHash;
+    private int block_id;
+    private int proof;
     private PatientRecordDTO patientRecord;
+    private String previousHash;
+    private String hash;
+    private long timestamp;
 
-    public BlockDTO(int index, long timestamp, String previousHash, PatientRecordDTO patientRecord) {
-        this.index = index;
-        this.timestamp = timestamp;
-        this.previousHash = previousHash;
+
+    public BlockDTO(int block_id, int proof, PatientRecordDTO patientRecord,String previousHash,long timestamp) {
+        this.block_id = block_id;
+        this.proof = proof;
         this.patientRecord = patientRecord;
+        this.previousHash = previousHash;
         this.hash = calculateHash();
+        this.timestamp = timestamp;
     }
 
     public String calculateHash() {
-        String data = index + timestamp + previousHash + patientRecord.toString();
+        String data = block_id + timestamp + previousHash + patientRecord.toString();
         return StringUtil.applySHA256(data);
     }
 }
